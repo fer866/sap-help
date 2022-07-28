@@ -1,0 +1,57 @@
+<div class="limiter">
+    <div class="default">
+        <div class="login-wrap">
+            <div class="logo-sm" *ngIf="(mobile | async)">
+                <img alt="CJF Logo" [src]="(isDark | async) ? 'assets/logo_alt_white.png' : 'assets/logo_alt_color.png'">
+            </div>
+            <div class="login-pic" cjfChangePerspective>
+                <img alt="CJF Logo" [src]="(isDark | async) ? 'assets/logo_white.png' : 'assets/logo_color.png'">
+            </div>
+            <form [formGroup]="loginForm" (ngSubmit)="onLoginSubmit()" enctype="multipart/form-data">
+                <!-- Title -->
+                <span class="title">Inicio de Sesión en SAP Help</span>
+    
+                <!-- Username -->
+                <mat-form-field appearance="fill" hintLabel="U + expediente">
+                    <mat-label>Usuario</mat-label>
+                    <input matInput type="text" autocomplete="username" required minlength="3" maxlength="10" formControlName="username">
+                    <mat-icon matPrefix>account_circle</mat-icon>
+                    <mat-hint align="end">Ejemplo: U12345</mat-hint>
+                    <mat-error *ngIf="loginForm.hasError('required', 'username')">Tu usuario es requerido</mat-error>
+                    <mat-error *ngIf="loginForm.hasError('minlength', 'username')">Debe tener mínimo 3 caracteres</mat-error>
+                    <mat-error *ngIf="loginForm.hasError('maxlength', 'username')">Debe tener máximo hasta 10 caracteres</mat-error>
+                </mat-form-field>
+    
+                <!-- Password -->
+                <mat-form-field appearance="fill">
+                    <mat-label>Contraseña</mat-label>
+                    <input matInput [type]="showPassword ? 'text' : 'password'" formControlName="password" required minlength="8" maxlength="16" autocomplete="current-password">
+                    <mat-icon matPrefix>lock</mat-icon>
+                    <button matSuffix type="button" mat-icon-button (click)="showPassword = !showPassword" [matTooltip]="showPassword ? 'Ocultar' : 'Mostrar'">
+                        <mat-icon>{{showPassword ? 'visibility' : 'visibility_off'}}</mat-icon>
+                    </button>
+                    <mat-hint *ngIf="newPassword">Debe tener al menos una mayúscula, una minúscula y un número</mat-hint>
+                    <mat-error *ngIf="loginForm.hasError('required', 'password')">La contraseña es requerida</mat-error>
+                    <mat-error *ngIf="loginForm.hasError('minlength', 'password')">Debe tener mínimo 8 caracteres</mat-error>
+                    <mat-error *ngIf="loginForm.hasError('maxlength', 'password')">Debe tener máximo 16 caracteres</mat-error>
+                    <mat-error *ngIf="loginForm.hasError('pattern', 'password')">Debe tener al menos una mayúscula, una minúscula y un número</mat-error>
+                </mat-form-field>
+    
+                <!-- Repeat Password -->
+                <ng-container *ngIf="newPassword">
+                    <mat-form-field appearance="fill">
+                        <mat-label>Repetir contraseña</mat-label>
+                        <input matInput [type]="showPassword ? 'text' : 'password'" minlength="8" maxlength="16" autocomplete="new-password" formControlName="repeatPassword">
+                        <mat-icon matPrefix>lock</mat-icon>
+                        <mat-error *ngIf="loginForm.hasError('required', 'repeatPassword')">La repetición de contraseña es requerida</mat-error>
+                        <mat-error *ngIf="loginForm.hasError('notSame')">La contraseña no coincide con la anterior</mat-error>
+                    </mat-form-field>
+                </ng-container>
+    
+                <div class="btn-section center">
+                    <button type="submit" mat-flat-button color="primary">Iniciar sesión</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>

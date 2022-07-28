@@ -1,0 +1,73 @@
+<main>
+    <div class="section no-m">
+        <mat-form-field appearance="outline">
+            <mat-label>Buscar tablas</mat-label>
+            <input matInput type="text" autocomplete="off" autocorrect="off" autocapitalize="off" minlength="2" placeholder="Frases o palabras clave" [formControl]="search">
+            <ng-container matSuffix *ngIf="!search.value">
+                <mat-icon>search</mat-icon>
+            </ng-container>
+            <ng-container matSuffix *ngIf="search.value">
+                <button type="button" mat-icon-button (click)="search.reset()" matTooltip="Limpiar"><mat-icon>clear</mat-icon></button>
+            </ng-container>
+        </mat-form-field>
+    </div>
+
+    <div class="section" *ngIf="!noResults">
+        <!-- Action Bar -->
+        <div class="space-between">
+            <h1 class="title-sh">
+                <ng-container *ngIf="search.valid">Resultados</ng-container>
+                <ng-container *ngIf="search.invalid">Tablas recientes</ng-container>
+            </h1>
+            <div class="right">
+                <div *ngIf="!edit">
+                    <button mat-mini-fab color="accent" matTooltip="Agregar tabla" (click)="onNewTable()">
+                        <mat-icon>add</mat-icon>
+                    </button>
+                </div>
+                <div>
+                    <button mat-mini-fab color="accent" [matTooltip]="edit ? 'Terminar' : 'Editar'" (click)="edit = !edit">
+                        <mat-icon>{{edit ? 'done' : 'edit'}}</mat-icon>
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Tables -->
+        <div *ngFor="let g of tables" [@slideToTop]>
+            <h3 class="list-subheader">{{g.category}}</h3>
+            <div class="row">
+                <div class="col s12 m6 l3" *ngFor="let t of g.tables; odd as odd; last as last">
+                    <mat-card class="card-table" [ngClass]="{'card-odd': odd}">
+                        <mat-card-subtitle>
+                            <a (click)="copyContent(t.tableTxt)" matTooltip="Copiar">{{t.tableTxt}}</a>
+                        </mat-card-subtitle>
+                        <mat-divider [inset]="true"></mat-divider>
+                        <mat-card-content>
+                            <span>{{t.description}}</span>
+                            <div class="actions" *ngIf="edit">
+                                <button type="button" mat-icon-button color="accent" matTooltip="Editar" (click)="onEditTable(t)">
+                                    <mat-icon>edit</mat-icon>
+                                </button>
+                                <button type="button" mat-icon-button color="warn" matTooltip="Eliminar" (click)="onDeleteTable(t)">
+                                    <mat-icon>delete_forever</mat-icon>
+                                </button>
+                            </div>
+                        </mat-card-content>
+                    </mat-card>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- No Results -->
+    <div class="section" *ngIf="noResults">
+        <div class="center-content">
+            <mat-icon class="lg-icon">search_off</mat-icon>
+            <h1>No se encontraron tablas</h1>
+            <button mat-raised-button color="primary" (click)="onNewTable()">
+                <mat-icon>add</mat-icon>&nbsp;Agregar tabla
+            </button>
+        </div>
+    </div>
+</main>

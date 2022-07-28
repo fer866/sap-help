@@ -1,0 +1,25 @@
+small {
+    display: block;
+    color: rgba(var(--foreground-rgb), 0.5);
+}
+.option-container {
+    width: 100%;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    .details {
+        display: flex;
+        flex-direction: column;
+        align-items: flex-start;
+        line-height: normal;
+        overflow: hidden;
+        .title {
+            font-size: .9em;
+            color: var(--foreground);
+        }
+        .subtitle {
+            font-size: .8em;
+            color: rgba(var(--foreground-rgb), 0.7);
+        }
+    }
+}

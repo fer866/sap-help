@@ -1,0 +1,46 @@
+<h2 mat-dialog-title>Bitácora de {{data.name}}</h2>
+
+<mat-dialog-content>
+    <div class="table-container-md">
+        <table class="table-mobile">
+            <thead>
+                <tr>
+                    <th scope="col">Acción</th>
+                    <th scope="col">Consulta</th>
+                    <th scope="col">Fecha</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr *ngFor="let b of data.binnacle | filter: search.value | slice: startIndex:endIndex">
+                    <td data-label="Acción">{{b.action}}</td>
+                    <td data-label="Consulta">{{b.object}}</td>
+                    <td data-label="Fecha">{{b.actionDate | customDate: 'dd-MM-yyyy' : ', h:mm a'}}</td>
+                </tr>
+                <tr *ngIf="!data.binnacle.length">
+                    <td colspan="3">Sin información</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+    <mat-paginator [length]="(data.binnacle | filter: search.value).length" [pageSize]="pageSize" [pageSizeOptions]="pageSizeOptions" (page)="onPageChange($event)" showFirstLastButtons></mat-paginator>
+</mat-dialog-content>
+
+<mat-dialog-actions>
+    <div class="space-between w-100">
+        <mat-form-field>
+            <mat-label>Buscar bitácoras</mat-label>
+            <input type="text" matInput placeholder="cualquier texto" autocapitalize="off" autocomplete="off" autocorrect="off" [formControl]="search">
+            <ng-container matSuffix *ngIf="!search.value">
+                <mat-icon>search</mat-icon>
+            </ng-container>
+            <ng-container matSuffix *ngIf="search.value">
+                <button type="button" mat-icon-button (click)="search.reset()" matTooltip="Limpiar">
+                    <mat-icon>clear</mat-icon>
+                </button>
+            </ng-container>
+        </mat-form-field>
+        <div>
+            <button type="button" mat-button cdkFocusInitial mat-dialog-close>Cerrar</button>
+        </div>
+    </div>
+</mat-dialog-actions>

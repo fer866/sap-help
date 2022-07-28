@@ -1,0 +1,56 @@
+<h4 mat-dialog-title>
+    <ng-container *ngIf="data.table">Editar tabla</ng-container>
+    <ng-container *ngIf="!data.table">Nueva tabla</ng-container>
+</h4>
+
+<mat-dialog-content>
+    <form [formGroup]="table" (ngSubmit)="onSubmit()" enctype="multipart/form-data">
+        <!-- Category -->
+        <mat-form-field>
+            <mat-label>Categoría</mat-label>
+            <mat-select formControlName="idCat" required>
+                <mat-option></mat-option>
+                <mat-option *ngFor="let cat of categories | async" [value]="cat.idCat">{{cat.category}}</mat-option>
+            </mat-select>
+            <mat-icon matPrefix>category</mat-icon>
+            <mat-error *ngIf="table.hasError('required', 'idCat')">La categoría es requerida</mat-error>
+        </mat-form-field>
+
+        <!-- Table -->
+        <mat-form-field>
+            <mat-label>Nombre de la tabla</mat-label>
+            <input type="text" matInput autocapitalize="off" autocomplete="off" minlength="3" maxlength="20" required placeholder="BKPF" formControlName="tableTxt" cjfUppercase>
+            <mat-icon matPrefix>dns</mat-icon>
+            <ng-container matSuffix *ngIf="table.controls.tableTxt.value">
+                <button type="button" mat-icon-button (click)="table.controls.tableTxt.reset()" matTooltip="Limpiar">
+                    <mat-icon>clear</mat-icon>
+                </button>
+            </ng-container>
+            <mat-hint align="end">{{table.controls.tableTxt.value?.length || 0}} / 20</mat-hint>
+            <mat-error *ngIf="table.hasError('required', 'tableTxt')">La tabla es requerida</mat-error>
+            <mat-error *ngIf="table.hasError('minlength', 'tableTxt')">Debe tener mínimo 3 caracteres</mat-error>
+            <mat-error *ngIf="table.hasError('maxlength', 'tableTxt')">Debe tener máximo 20 caracteres</mat-error>
+        </mat-form-field>
+
+        <!-- Description -->
+        <mat-form-field>
+            <mat-label>Descripción de la tabla</mat-label>
+            <textarea matInput rows="4" minlength="5" maxlength="255" placeholder="..." formControlName="description" required></textarea>
+            <mat-icon matPrefix>notes</mat-icon>
+            <ng-container matSuffix *ngIf="table.controls.description.value">
+                <button type="button" mat-icon-button (click)="table.controls.description.reset()" matTooltip="Limpiar">
+                    <mat-icon>clear</mat-icon>
+                </button>
+            </ng-container>
+            <mat-hint align="end">{{table.controls.description.value?.length || 0}} / 255</mat-hint>
+            <mat-error *ngIf="table.hasError('required', 'description')">La descripción es requerida</mat-error>
+            <mat-error *ngIf="table.hasError('minlength', 'description')">Debe tener mínimo 5 caracteres</mat-error>
+            <mat-error *ngIf="table.hasError('maxlength', 'description')">Debe tener máximo 255 caracteres</mat-error>
+        </mat-form-field>
+
+        <div class="center-btn">
+            <div><button type="submit" mat-flat-button color="primary">Guardar</button></div>
+            <div><button type="button" mat-flat-button (click)="onClose('cancel')" cdkFocusInitial>Cancelar</button></div>
+        </div>
+    </form>
+</mat-dialog-content>

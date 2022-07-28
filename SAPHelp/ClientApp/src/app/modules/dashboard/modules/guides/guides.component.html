@@ -1,0 +1,50 @@
+<main>
+    <div class="section no-m">
+        <mat-form-field appearance="outline">
+            <mat-label>Buscar guías</mat-label>
+            <input matInput type="text" autocomplete="off" autocorrect="off" autocapitalize="off" minlength="2" placeholder="Frases o palabras clave" [formControl]="search">
+            <ng-container matSuffix *ngIf="!search.value">
+                <mat-icon>search</mat-icon>
+            </ng-container>
+            <ng-container matSuffix *ngIf="search.value">
+                <button type="button" mat-icon-button (click)="search.reset()" matTooltip="Limpiar"><mat-icon>clear</mat-icon></button>
+            </ng-container>
+        </mat-form-field>
+    </div>
+
+    <div class="section" *ngIf="!noResults; else elseGuide">
+        <div class="space-between">
+            <h1 class="title-sh">
+                <ng-container *ngIf="search.valid">Resultados</ng-container>
+                <ng-container *ngIf="search.invalid">Guías recientes</ng-container>
+            </h1>
+            <a mat-raised-button color="primary" routerLink="/dashboard/guides/new"><mat-icon>add</mat-icon>&nbsp;Agregar Guía</a>
+        </div>
+
+        <div *ngFor="let grp of guides" [@slideToTop]>
+            <h3 class="list-subheader">{{grp.category}}</h3>
+            <div class="row">
+                <div class="col s12 m6 l3" *ngFor="let g of grp.guides">
+                    <mat-card [routerLink]="['/dashboard/guides', g.idGuide]" matRipple>
+                        <mat-card-content>{{g.title}}</mat-card-content>
+                        <mat-card-footer>
+                            <mat-chip-list>
+                                <mat-chip *ngFor="let tag of g.tags?.split(',', 5); odd as isOdd" color="accent" [selected]="isOdd">{{tag}}</mat-chip>
+                            </mat-chip-list>
+                        </mat-card-footer>
+                    </mat-card>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <ng-template #elseGuide>
+        <div class="section">
+            <div class="center-content">
+                <mat-icon class="lg-icon">search_off</mat-icon>
+                <h1>No se encontraron guías</h1>
+                <a mat-raised-button color="primary" routerLink="/dashboard/guides/new"><mat-icon>add</mat-icon>&nbsp;Agregar Guía</a>
+            </div>
+        </div>
+    </ng-template>
+</main>

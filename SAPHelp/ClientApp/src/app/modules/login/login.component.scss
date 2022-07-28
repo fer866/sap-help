@@ -1,0 +1,89 @@
+.limiter {
+    width: 100%;
+    margin: 0 auto;
+}
+.default {
+    min-height: 100vh;
+    width: 100%;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    align-items: center;
+    padding: 15px;
+    background: linear-gradient(-128deg, #9179e4, #24135f, #525252);
+}
+.login-wrap {
+    width: 960px;
+    background: var(--background);
+    color: var(--foreground);
+    border-radius: 10px;
+    overflow: hidden;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    padding: 118px 65px;
+    position: relative;
+    @media only screen and (max-width: 768px) {
+        padding: 105px 65px;
+    }
+    @media only screen and (max-width: 576px) {
+        padding: 85px 30px;
+    }
+}
+.logo-sm {
+    position: absolute;
+    left: 24px;
+    top: 15px;
+    width: 140px;
+    img {
+        max-width: 100%;
+    }
+}
+.login-pic {
+    width: 260px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    will-change: transform;
+    transition: transform 50ms;
+    -webkit-transition: transform 50ms;
+    @media only screen and (max-width: 992px) {
+        width: 35%;
+    }
+    @media only screen and (max-width: 768px) {
+        display: none;
+    }
+    img {
+        max-width: 100%;
+    }
+}
+form {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    width: 320px;
+    @media only screen and (max-width: 992px) {
+        width: 50%;
+    }
+    @media only screen and (max-width: 768px) {
+        width: 100%;
+    }
+    mat-form-field {
+        width: 100%;
+        padding-bottom: 24px;
+    }
+    .title {
+        font-size: 24px;
+        font-weight: 600;
+        line-height: 1.2;
+        text-align: center;
+        width: 100%;
+        display: block;
+        padding-bottom: 54px;
+    }
+    .btn-section {
+        button {
+            width: 100%;
+        }
+    }
+}

@@ -1,0 +1,75 @@
+<main>
+    <div class="section">
+        <div class="left">
+            <button type="button" mat-icon-button matTooltip="Regresar" routerLink="/dashboard/admin">
+                <mat-icon class="back-arrow">arrow_back</mat-icon>
+            </button>
+        </div>
+
+        <div class="row">
+            <!-- Username -->
+            <mat-form-field appearance="outline" class="col s12 m12 l8 pull-l2 push-l2">
+                <mat-label>Buscar empleados</mat-label>
+                <input matInput type="text" placeholder="expediente o nombre" [formControl]="searchForm" required [matAutocomplete]="auto">
+                <ng-container *ngIf="searchForm.value" matSuffix>
+                    <button type="button" mat-icon-button color="warn" (click)="onResetSearch()" [disabled]="edit" matTooltip="Borrar">
+                        <mat-icon>clear</mat-icon>
+                    </button>
+                </ng-container>
+                <mat-hint>Usa el signo ? después del nombre con la adscripción para mayor precisión</mat-hint>
+                <mat-error *ngIf="searchForm.hasError('required')">Es requerida la búsqueda</mat-error>
+                <mat-error *ngIf="searchForm.hasError('minlength')">Debe tener por lo menos 3 caracteres</mat-error>
+
+                <mat-autocomplete autoActiveFirstOption #auto="matAutocomplete" (optionSelected)="onEmployeeSelected($event)" [displayWith]="displayFn">
+                    <mat-option *ngFor="let emp of listEmployee | async" [value]="emp">
+                        <div class="option-container">
+                            <div class="details">
+                                <span class="title">{{emp.name}}</span>
+                                <span class="subtitle">{{emp.adscripcion}}</span>
+                            </div>
+                        </div>
+                    </mat-option>
+                    <mat-option *ngIf="noResults">Sin resultados</mat-option>
+                </mat-autocomplete>
+            </mat-form-field>
+        </div>
+
+        <form class="row" [formGroup]="userForm" (ngSubmit)="onSubmit()" enctype="multipart/form-data">
+            <!-- Name -->
+            <div class="col s12 m6 pull-m6">
+                <small>Nombre y apellido</small>
+                <span *ngIf="userForm.controls.name.invalid">- Sin asignar -</span>
+                <span *ngIf="userForm.controls.name.valid">{{userForm.controls.name.value}}</span>
+                <span class="form-error" *ngIf="userForm.hasError('required', 'name') && (userForm.touched || userForm.dirty)">Es requerido el nombre</span>
+            </div>
+
+            <!-- Rol -->
+            <mat-form-field class="col s12 m6 pull-m6">
+                <mat-label>Rol de usuario</mat-label>
+                <mat-select formControlName="userRole" required>
+                    <mat-option></mat-option>
+                    <mat-option [value]="0">Usuario</mat-option>
+                    <mat-option [value]="1">Administrador</mat-option>
+                </mat-select>
+                <mat-error *ngIf="userForm.hasError('required', 'userRole')">Es requerido el rol</mat-error>
+            </mat-form-field>
+
+            <!-- Reset Request -->
+            <div class="col s12 m6">
+                <mat-slide-toggle color="accent" formControlName="resetRequest">Requerir cambio de contraseña</mat-slide-toggle>
+            </div>
+
+            <!-- Active -->
+            <div class="col s12 m6">
+                <mat-slide-toggle color="accent" formControlName="active">¿Está activo?</mat-slide-toggle>
+            </div>
+
+            <div class="col s12 btn-section">
+                <div><button type="submit" mat-raised-button color="primary">Guardar</button></div>
+                <div *ngIf="!edit">
+                    <button type="reset" mat-raised-button (click)="onResetForm()">Limpiar</button>
+                </div>
+            </div>
+        </form>
+    </div>
+</main>

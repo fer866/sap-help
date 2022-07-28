@@ -1,0 +1,16 @@
+<div class="container" [@photo]="{ value: 'open', params: { x: (props | async)?.x, y: (props | async)?.y } }">
+    <div class="close">
+        <button type="button" mat-icon-button (click)="onClose()" matTooltip="Cerrar"><mat-icon>clear</mat-icon></button>
+    </div>
+    <div class="center" (click)="onClose()">
+        <div class="profile" (click)="$event.stopPropagation()">
+            <img alt="Paso" [src]="(step | async)?.fileUrl">
+        </div>
+    </div>
+    <div class="bottom-details">
+        <div class="column">
+            <span>Paso {{((step | async)?.position || 0) + 1}}</span>
+            <span class="exp">{{(step | async)?.stepTxt}}</span>
+        </div>
+    </div>
+</div>

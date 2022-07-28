@@ -1,0 +1,90 @@
+<header>
+    <h1>Admin. Usuarios</h1>
+</header>
+
+<main>
+    <div class="section">
+        <!-- Search and Action button -->
+        <div class="space-between">
+            <mat-form-field>
+                <mat-label>Buscar usuarios</mat-label>
+                <input type="text" matInput [formControl]="search" autocomplete="off" autocapitalize="off" placeholder="nombre o expediente">
+                <ng-container matSuffix *ngIf="!search.value">
+                    <mat-icon>search</mat-icon>
+                </ng-container>
+                <ng-container matSuffix *ngIf="search.value">
+                    <button type="button" mat-icon-button matTooltip="Limpiar" (click)="search.reset()">
+                        <mat-icon>clear</mat-icon>
+                    </button>
+                </ng-container>
+            </mat-form-field>
+
+            <div>
+                <a mat-raised-button routerLink="/dashboard/admin/user" color="primary">
+                    <mat-icon>add</mat-icon>&nbsp;Agregar usuario
+                </a>
+                <button mat-icon-button (click)="getUsers()" matTooltip="Refrescar"><mat-icon>refresh</mat-icon></button>
+                <ng-container *ngIf="(mobile | async)">
+                    <button type="button" mat-icon-button matBadge="1" matBadgeColor="accent" [matBadgeHidden]="!userSort?.active" matTooltip="Ordenar" [matMenuTriggerFor]="sortMenu">
+                        <mat-icon>sort</mat-icon>
+                    </button>
+                    <mat-menu #sortMenu="matMenu">
+                        <button *ngFor="let m of sortOptions" mat-menu-item type="button" (click)="sortFromMenu(m.option || '')">
+                            <span>{{m.name}}</span>
+                            <mat-icon *ngIf="userSort?.active === m.option">
+                                {{userSort?.direction === 'asc' ? 'north' : 'south'}}
+                            </mat-icon>
+                        </button>
+                    </mat-menu>
+                </ng-container>
+            </div>
+        </div>
+
+        <table class="table-mobile" matSort (matSortChange)="sortData($event)">
+            <thead>
+                <tr>
+                    <th scope="col" mat-sort-header="username">Usuario</th>
+                    <th scope="col" mat-sort-header="name">Nombre</th>
+                    <th scope="col" mat-sort-header="created" start="desc">Fecha de alta</th>
+                    <th scope="col" mat-sort-header="lastAccess" start="desc">Último acceso</th>
+                    <th scope="col" mat-sort-header="userRole">Rol</th>
+                    <th scope="col">Req. Reseteo</th>
+                    <th scope="col">Activo</th>
+                    <th scope="col"></th>
+                </tr>
+            </thead>
+            <tbody [@slideToTop]="users.length">
+                <tr *ngFor="let usr of users | search: search.value | slice: startIndex : endIndex">
+                    <td data-label="Usuario">{{usr.username}}</td>
+                    <td data-label="Nombre">{{usr.name}}</td>
+                    <td data-label="Fecha de alta">{{usr.created | customDate: 'dd-MM-yyyy'}}</td>
+                    <td data-label="Último acceso">{{usr.lastAccess | customDate: 'dd-MM-yyyy' : ', h:mm a'}}</td>
+                    <td data-label="Rol">{{usr.userRole === 0 ? 'Usuario' : usr.userRole === 1 ? 'Administrador' : ''}}</td>
+                    <td data-label="Reseteo">
+                        <mat-icon color="accent">{{usr.resetRequest ? 'check_circle' : 'highlight_off'}}</mat-icon>
+                    </td>
+                    <td data-label="Activo">
+                        <mat-icon color="accent">{{usr.active ? 'check_circle' : 'highlight_off'}}</mat-icon>
+                    </td>
+                    <td>
+                        <button type="button" color="accent" mat-icon-button matTooltip="Opciones" [matMenuTriggerFor]="options">
+                            <mat-icon>more_vert</mat-icon>
+                        </button>
+                        <mat-menu #options="matMenu">
+                            <button type="button" mat-menu-item (click)="showBinnacle(usr)">
+                                <mat-icon>pending_actions</mat-icon> Bitácora
+                            </button>
+                            <a [routerLink]="['./user', usr.username]" mat-menu-item>
+                                <mat-icon>edit</mat-icon> Editar
+                            </a>
+                            <button type="button" mat-menu-item (click)="onDeleteUser(usr)">
+                                <mat-icon>delete_forever</mat-icon> Eliminar
+                            </button>
+                        </mat-menu>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+        <mat-paginator [length]="(users | search: search.value)?.length || 0" [pageSize]="pageSize" [pageSizeOptions]="pageSizeOptions" (page)="onPageChange($event)" showFirstLastButtons></mat-paginator>
+    </div>
+</main>

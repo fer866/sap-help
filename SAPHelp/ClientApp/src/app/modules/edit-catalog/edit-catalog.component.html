@@ -1,0 +1,28 @@
+<h4 mat-dialog-title>
+    <ng-container *ngIf="data.category">Editar categoría</ng-container>
+    <ng-container *ngIf="!data.category">Nueva categoría</ng-container>
+</h4>
+
+<mat-dialog-content>
+    <form [formGroup]="category" (ngSubmit)="onSubmit()" enctype="multipart/form-data">
+        <mat-form-field>
+            <mat-label>Categoría</mat-label>
+            <input matInput type="text" required minlength="5" maxlength="60" autocomplete="off" placeholder="nombre de la categoría" formControlName="category">
+            <mat-icon matPrefix>category</mat-icon>
+            <ng-container matSuffix *ngIf="category.value">
+                <button type="button" mat-icon-button (click)="category.reset()" matTooltip="Limpiar">
+                    <mat-icon>clear</mat-icon>
+                </button>
+            </ng-container>
+            <mat-hint align="end">{{category.controls.category.value?.length || 0}} / 60</mat-hint>
+            <mat-error *ngIf="category.hasError('required', 'category')">La categoría es requerida</mat-error>
+            <mat-error *ngIf="category.hasError('minlength', 'category')">Debe tener mínimo 5 caracteres</mat-error>
+            <mat-error *ngIf="category.hasError('maxlength', 'category')">Debe tener máxmio 60 caracteres</mat-error>
+        </mat-form-field>
+
+        <div class="center-btn">
+            <button type="submit" mat-flat-button color="primary">Guardar</button>
+            <button type="button" mat-flat-button (click)="onClose('cancel')" cdkFocusInitial>Cancelar</button>
+        </div>
+    </form>
+</mat-dialog-content>

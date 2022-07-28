@@ -1,0 +1,20 @@
+mat-form-field {
+    width: 100%;
+}
+.card-table {
+    transition: height 500ms ease;
+    .mat-card-subtitle {
+        margin: 0;
+    }
+    mat-divider {
+        margin: 5px 0;
+    }
+}
+.actions {
+    display: flex;
+    flex-flow: row wrap;
+    justify-content: flex-end;
+}
+.card-odd {
+    background-color: rgba(var(--foreground-rgb), 0.05);
+}

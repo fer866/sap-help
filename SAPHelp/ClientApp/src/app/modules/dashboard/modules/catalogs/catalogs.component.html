@@ -1,0 +1,56 @@
+<header>
+    <h1>Categorías</h1>
+</header>
+
+<main>
+    <div class="section">
+        <div class="space-between">
+            <mat-form-field>
+                <mat-label>Buscar categorías</mat-label>
+                <input type="text" matInput [formControl]="search" autocapitalize="off" autocomplete="off" placeholder="nombre de categoría">
+                <ng-container matSuffix *ngIf="!search.value">
+                    <mat-icon>search</mat-icon>
+                </ng-container>
+                <ng-container matSuffix *ngIf="search.value">
+                    <button type="button" mat-icon-button matTooltip="Limpiar" (click)="search.reset()">
+                        <mat-icon>clear</mat-icon>
+                    </button>
+                </ng-container>
+            </mat-form-field>
+
+            <div>
+                <button type="button" mat-raised-button color="primary" (click)="onAddCatalog()">
+                    <mat-icon>add</mat-icon>&nbsp;Agregar categoría
+                </button>
+            </div>
+        </div>
+
+        <table class="table-mobile">
+            <thead>
+                <tr>
+                    <th scope="col">Categoría</th>
+                    <th scope="col">Fecha creación</th>
+                    <th scope="col"></th>
+                </tr>
+            </thead>
+            <tbody [@slideToTop]="(categories | async)?.length">
+                <tr *ngFor="let c of (categories | async) | search: search.value | slice: startIndex : endIndex">
+                    <td data-label="Categoría">{{c.category}}</td>
+                    <td data-label="Creado">{{c.registro | date: 'dd/MM/yyyy'}}</td>
+                    <td data-label="">
+                        <button type="button" mat-icon-button matTooltip="Eliminar" (click)="onDeleteCatalog(c)">
+                            <mat-icon>delete_forever</mat-icon>
+                        </button>
+                        <button type="button" mat-icon-button matTooltip="Editar" (click)="onEditCatalog(c)">
+                            <mat-icon>edit</mat-icon>
+                        </button>
+                    </td>
+                </tr>
+                <tr *ngIf="noResults">
+                    <td colspan="3">Sin resultados</td>
+                </tr>
+            </tbody>
+        </table>
+        <mat-paginator [length]="((categories | async) | search: search.value)?.length || 0" [pageSize]="pageSize" [pageSizeOptions]="pageSizeOptions" (page)="onPageChange($event)" showFirstLastButtons></mat-paginator>
+    </div>
+</main>

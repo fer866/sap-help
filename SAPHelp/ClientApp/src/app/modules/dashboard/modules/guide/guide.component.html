@@ -1,0 +1,181 @@
+<main>
+    <div class="section">
+        <mat-accordion>
+            <mat-expansion-panel [expanded]="newGuide">
+                <mat-expansion-panel-header>
+                    <mat-panel-title>{{guide.controls.title.value}}</mat-panel-title>
+                </mat-expansion-panel-header>
+
+                <form class="row no-m" [formGroup]="guide" (ngSubmit)="onSubmit()" enctype="multipart/form-data">
+                    <!-- Category -->
+                    <mat-form-field class="col s12 m4 pull-m8">
+                        <mat-label>Categoría</mat-label>
+                        <mat-select formControlName="idCat" required>
+                            <mat-option></mat-option>
+                            <mat-option *ngFor="let c of categories | async" [value]="c.idCat">{{c.category}}</mat-option>
+                        </mat-select>
+                        <mat-icon matPrefix>category</mat-icon>
+                        <mat-error *ngIf="guide.hasError('required', 'idCat')">La categoría es requerida</mat-error>
+                    </mat-form-field>
+
+                    <!-- Title -->
+                    <mat-form-field hintLabel="Breve descripción de la guía" class="col s12 m12">
+                        <mat-label>Título de la guía</mat-label>
+                        <input type="text" required matInput minlength="5" maxlength="200" autocomplete="off" formControlName="title">
+                        <mat-icon matPrefix>title</mat-icon>
+                        <mat-hint align="end">{{guide.controls.title.value?.length || 0}} / 200</mat-hint>
+                        <mat-error *ngIf="guide.hasError('required', 'title')">El título es requerido</mat-error>
+                        <mat-error *ngIf="guide.hasError('minlength', 'title')">Debe tener mínimo 5 caracteres</mat-error>
+                    </mat-form-field>
+
+                    <!-- Tags -->
+                    <mat-form-field hintLabel="Presiona ENTER al capturar una palabra o frase" class="col s12 m12">
+                        <mat-label>Etiquetas</mat-label>
+                        <mat-chip-list #chipList>
+                            <mat-chip *ngFor="let tag of tags" [selectable]="true" color="accent" [removable]="true" (removed)="removeTag(tag)">
+                                {{tag}}
+                                <mat-icon matChipRemove *ngIf="newGuide || editGuide" matTooltip="Eliminar">cancel</mat-icon>
+                            </mat-chip>
+                        </mat-chip-list>
+                        <input type="text" placeholder="Nueva etiqueta..." matInput formControlName="tags"
+                               minlength="5"
+                               maxlength="200"
+                               autocomplete="off"
+                               [matChipInputFor]="chipList"
+                               [matChipInputSeparatorKeyCodes]="separatorKeysCodes"
+                               [matChipInputAddOnBlur]="true"
+                               (matChipInputTokenEnd)="addTag($event)">
+                        <mat-icon matPrefix>label</mat-icon>
+                        <mat-hint align="end">{{tags.join(',')?.length || 0}} / 500</mat-hint>
+                        <span class="form-error" *ngIf="(guide.controls.tags.touched || guide.controls.tags.dirty) && tags.length <= 0">Las etiquetas son requeridas</span>
+                    </mat-form-field>
+
+                    <!-- Views & Date -->
+                    <div class="col s12 m12" *ngIf="!newGuide && !editGuide">
+                        <div class="guide-details">
+                            <div class="detail">
+                                <mat-icon>visibility</mat-icon>
+                                <div>
+                                    <span>{{guide.controls.views.value || 0}}</span>
+                                    <span class="small"># de vistas</span>
+                                </div>
+                            </div>
+                            <div class="detail" *ngIf="guide.controls.lastView.value">
+                                <mat-icon>history</mat-icon>
+                                <div>
+                                    <span>{{guide.controls.lastView.value | date: 'd MMM yyyy'}}</span>
+                                    <span class="small">Última actualización</span>
+                                </div>
+                            </div>
+                            <div class="detail">
+                                <mat-icon>event</mat-icon>
+                                <div>
+                                    <span>{{guide.controls.alta.value | date: "d MMM yyyy"}}</span>
+                                    <span class="small">Fecha de creación</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Buttons -->
+                    <div class="col s12 center-btn no-m">
+                        <div *ngIf="newGuide || editGuide">
+                            <button type="submit" mat-raised-button color="primary">Guardar</button>
+                        </div>
+                        <div *ngIf="newGuide">
+                            <button type="reset" mat-raised-button>Limpiar</button>
+                        </div>
+                        <ng-container *ngIf="!newGuide && !editGuide">
+                            <div>
+                                <button type="button" mat-raised-button color="accent" (click)="onEditHeader()">Editar</button>
+                            </div>
+                            <div>
+                                <button type="button" mat-raised-button color="warn" (click)="onDeleteGuide()">Eliminar</button>
+                            </div>
+                        </ng-container>
+                        <div *ngIf="editGuide">
+                            <button type="button" mat-raised-button (click)="onEditHeader()">Cancelar</button>
+                        </div>
+                    </div>
+                </form>
+            </mat-expansion-panel>
+        </mat-accordion>
+
+        <!-- Action bar -->
+        <div class="space-between" *ngIf="!newGuide">
+            <div>
+                <a routerLink="/dashboard/guides" mat-icon-button matTooltip="Regresar a guías">
+                    <mat-icon class="back-arrow">arrow_back</mat-icon>
+                </a>
+            </div>
+            <div class="right" *ngIf="!newGuide">
+                <div *ngIf="!orderSteps">
+                    <button type="button" mat-mini-fab color="accent" [matTooltip]="editSteps ? 'Terminar edición' : 'Editar pasos'" (click)="editSteps = !editSteps">
+                        <mat-icon>{{editSteps ? 'done' : 'edit'}}</mat-icon>
+                    </button>
+                </div>
+                <div *ngIf="!editSteps">
+                    <button type="button" mat-mini-fab color="accent" [matTooltip]="orderSteps ? 'Terminar' : 'Cambiar orden'" (click)="changeOrderEdit()">
+                        <mat-icon>{{orderSteps ? 'done' : 'low_priority'}}</mat-icon>
+                    </button>
+                </div>
+                <div>
+                    <button type="button" mat-mini-fab color="accent" matTooltip="Descargar en PDF" (click)="onGeneratePdf()">
+                        <mat-icon>download</mat-icon>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Steps -->
+    <div class="section">
+        <div class="row" cdkDropList (cdkDropListDropped)="onDrop($event)">
+            <div class="col s12 m12" [ngClass]="{'l6': !orderSteps}" *ngFor="let step of listSteps" cdkDrag [cdkDragDisabled]="!orderSteps" [cdkDragData]="step">
+                <h3 class="list-subheader">Paso {{(step.position || 0) + 1}}</h3>
+                <mat-card class="step" [ngClass]="{'edit-mask': (editSteps || orderSteps)}">
+                    <div class="actions" *ngIf="editSteps">
+                        <button type="button" mat-icon-button matTooltip="Editar" (click)="onEditStep(step)">
+                            <mat-icon>edit</mat-icon>
+                        </button>
+                        <button type="button" mat-icon-button matTooltip="Eliminar" (click)="onDeleteStep(step)">
+                            <mat-icon>delete_forever</mat-icon>
+                        </button>
+                    </div>
+                    <div class="move" *ngIf="orderSteps">
+                        <button type="button" mat-icon-button matTooltip="Mover" cdkDragHandle>
+                            <mat-icon>drag_indicator</mat-icon>
+                        </button>
+                    </div>
+                    <mat-card-header>
+                        <div #avatar class="avatar" mat-card-avatar *ngIf="step.fileUrl" (click)="onStepFileClick(step, avatar)">
+                            <img [alt]="step.position" [src]="step.isImage ? step.fileUrl : 'assets/attachment.png'" [matTooltip]="step.isImage ? 'Ver imagen' : getFileType(step)">
+                        </div>
+                        <mat-card-title class="card-title">
+                            {{step.stepTxt}}
+                            <ng-container *ngIf="!orderSteps && !editSteps">
+                                <button type="button" mat-icon-button (click)="copyContent(step.stepTxt)" matTooltip="Copiar">
+                                    <mat-icon class="copy">content_copy</mat-icon>
+                                </button>
+                            </ng-container>
+                        </mat-card-title>
+                        <mat-card-subtitle class="card-subtitle">
+                            <ng-container *ngIf="!orderSteps && !editSteps; else elseSubtitle">
+                                <a (click)="copyContent(step.transactionTxt)" matTooltip="Copiar">{{step.transactionTxt}}</a>
+                            </ng-container>
+                            <ng-template #elseSubtitle>{{step.transactionTxt}}</ng-template>
+                        </mat-card-subtitle>
+                    </mat-card-header>
+                </mat-card>
+                <div class="custom-placeholder" *cdkDragPlaceholder></div>
+            </div>
+            <div class="col s12 m12 l6" *ngIf="!newGuide && !orderSteps">
+                <mat-card class="add-step" (click)="onNewStep()" matRipple>
+                    <mat-card-header>
+                        <mat-card-title><mat-icon>add_circle</mat-icon>&nbsp;Agregar nuevo paso</mat-card-title>
+                    </mat-card-header>
+                </mat-card>
+            </div>
+        </div>
+    </div>
+</main>

@@ -1,0 +1,88 @@
+.avatar {
+    $size: 100px;
+    min-width: $size;
+    min-height: $size;
+    cursor: pointer;
+    img {
+        width: $size;
+        height: $size;
+        border-radius: 50%;
+        overflow: hidden;
+    }
+}
+.card-title {
+    font-size: 14px;
+}
+.card-subtitle {
+    font-size: 15px;
+    font-weight: 700;
+}
+.add-step {
+    border: 0.2em dashed var(--primary);
+    background: unset;
+    cursor: pointer;
+    color: var(--primary);
+}
+.step {
+    transition: background 280ms cubic-bezier(0.4, 0, 0.2, 1),
+                color 280ms cubic-bezier(0.4, 0, 0.2, 1);
+}
+.edit-mask {
+    background-color: var(--accent);
+    color: var(--contrast);
+    .actions {
+        position: absolute;
+        bottom: 10px;
+        right: 15px;
+        display: flex;
+        flex-flow: row wrap;
+    }
+    .move {
+        position: absolute;
+        top: 50%;
+        right: 8px;
+        transform: translateY(-50%);
+        button {
+            cursor: grab;
+        }
+    }
+    .card-subtitle {
+        color: var(--contrast);
+    }
+}
+.custom-placeholder {
+    background: rgba(var(--foreground-rgb), 0.15);
+    border: dashed 3px rgba(var(--foreground-rgb), 0.5);
+    min-height: 90px;
+    width: 100%;
+    transition: transform 250ms cubic-bezier(0, 0, 0.2, 1);
+}
+.copy {
+    $size: 16px !important;
+    width: $size;
+    height: $size;
+    font-size: $size;
+    line-height: $size;
+}
+.guide-details {
+    display: grid;
+    gap: 12px;
+    row-gap: 18px;
+    grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+    align-items: center;
+    justify-content: center;
+    .detail {
+        display: grid;
+        gap: 8px;
+        grid-template-columns: repeat(2, auto);
+        align-items: center;
+        justify-content: center;
+        span {
+            display: block;
+            &.small {
+                font-size: 0.8em;
+                color: rgba(var(--foreground-rgb), 0.5);
+            }
+        }
+    }
+}

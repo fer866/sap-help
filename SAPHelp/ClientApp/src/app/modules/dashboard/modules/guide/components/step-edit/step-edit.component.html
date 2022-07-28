@@ -1,0 +1,66 @@
+<h4 mat-dialog-title>
+    <ng-container *ngIf="data.step">Editar paso&nbsp;{{(data.step?.position || 0) + 1}}</ng-container>
+    <ng-container *ngIf="!data.step">Agregar nuevo paso</ng-container>
+</h4>
+
+<mat-dialog-content>
+    <form class="row no-m" [formGroup]="stepForm" (ngSubmit)="onSubmit()" enctype="multipart/form-data">
+        <!-- File -->
+        <div class="col s12 no-m">
+            <div class="drop-file" (paste)="onPasteFile($event)" (drop)="dropHandler($event)" (dragover)="dragOverHandler($event)" (dragleave)="dragLeaveHandler($event)" [ngClass]="{'drag-over': dragOver}">
+                <div *ngIf="!stepForm.controls.fileSource.value && !dragOver">
+                    <span>Pegar imagen (ctrl+v) o Arrastrar archivo o</span>&nbsp;
+                    <input class="fileinput" type="file" accept="image/*,.pdf,.doc,.docx,.ppt,.pptx,.xls,.xlsx,.txt,.xml" name="file"
+                        id="file" formControlName="file" (change)="onFileChange($event)">
+                    <label for="file">Elige un archivo</label>
+                </div>
+                <div class="delete" *ngIf="stepForm.controls.fileSource.value">
+                    <button type="button" mat-icon-button color="warn" (click)="onResetFile()" matTooltip="Eliminar">
+                        <mat-icon>remove_circle</mat-icon>
+                    </button>
+                </div>
+                <span *ngIf="fileName">{{fileName}}</span>
+                <div class="image" *ngIf="imageUrl">
+                    <img alt="imagen subida" [src]="imageUrl">
+                </div>
+                <span *ngIf="dragOver">Suelte aquí el archivo</span>
+            </div>
+            <div class="space-between drop-hint">
+                <span>Solo imágenes, word, ppt, excel, pdf, txt</span>
+                <span>Max. 25Mb</span>
+            </div>
+        </div>
+        
+        <!-- Transaction -->
+        <mat-form-field class="col s12 m6 l4 no-m" hintLabel="Si no tiene puedes usar N/A">
+            <mat-label>Transacción</mat-label>
+            <input type="text" matInput required autocomplete="off" autocorrect="off" minlength="2"
+                maxlength="30" formControlName="transactionTxt" placeholder="Nombre de la transacción" cjfUppercase>
+            <mat-icon matPrefix>flag</mat-icon>
+            <ng-container matSuffix *ngIf="stepForm.controls.transactionTxt.value">
+                <button type="button" mat-icon-button matTooltip="Limpiar" (click)="stepForm.controls.transactionTxt.reset()">
+                    <mat-icon>clear</mat-icon>
+                </button>
+            </ng-container>
+            <mat-hint align="end">{{stepForm.controls.transactionTxt.value?.length || 0}} / 30</mat-hint>
+            <mat-error *ngIf="stepForm.hasError('required', 'transactionTxt')">La transacción es requerida</mat-error>
+            <mat-error *ngIf="stepForm.hasError('minlength', 'transactionTxt')">El mínimo de caracteres son 2</mat-error>
+        </mat-form-field>
+
+        <!-- Text -->
+        <mat-form-field class="col s12 m6 l8 no-m" hintLabel="Descripción breve del paso">
+            <mat-label>Descripción</mat-label>
+            <textarea matInput required rows="3" minlength="5" maxlength="300" placeholder="..." formControlName="stepTxt"></textarea>
+            <mat-icon matPrefix>notes</mat-icon>
+            <mat-hint align="end">{{stepForm.controls.stepTxt.value?.length || 0}} / 300</mat-hint>
+            <mat-error *ngIf="stepForm.hasError('required', 'stepTxt')">La descripción es requerida</mat-error>
+            <mat-error *ngIf="stepForm.hasError('minlength', 'stepTxt')">El mínimo de caracteres son 5</mat-error>
+        </mat-form-field>
+
+        <!-- Buttons -->
+        <div class="col s12 no-m center-btn">
+            <div><button type="submit" mat-flat-button color="primary">Guardar</button></div>
+            <div><button type="button" mat-flat-button (click)="onCancel()" cdkFocusInitial>Cancelar</button></div>
+        </div>
+    </form>
+</mat-dialog-content>

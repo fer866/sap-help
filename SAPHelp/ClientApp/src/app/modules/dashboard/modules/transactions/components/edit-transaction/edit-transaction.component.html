@@ -1,0 +1,56 @@
+<h4 mat-dialog-title>
+    <ng-container *ngIf="data.transaction">Editar transacción</ng-container>
+    <ng-container *ngIf="!data.transaction">Nueva transacción</ng-container>
+</h4>
+
+<mat-dialog-content>
+    <form [formGroup]="transaction" (ngSubmit)="onSubmit()" enctype="multipart/form-data">
+        <!-- Category -->
+        <mat-form-field>
+            <mat-label>Categoría</mat-label>
+            <mat-select formControlName="idCat" required>
+                <mat-option></mat-option>
+                <mat-option *ngFor="let cat of categories | async" [value]="cat.idCat">{{cat.category}}</mat-option>
+            </mat-select>
+            <mat-icon matPrefix>category</mat-icon>
+            <mat-error *ngIf="transaction.hasError('required', 'idCat')">La categoría es requerida</mat-error>
+        </mat-form-field>
+
+        <!-- Transaction -->
+        <mat-form-field>
+            <mat-label>Transacción</mat-label>
+            <input type="text" matInput autocapitalize="off" autocomplete="off" minlength="3" maxlength="25" required placeholder="FB01" formControlName="transactionTxt" cjfUppercase>
+            <mat-icon matPrefix>flag</mat-icon>
+            <ng-container matSuffix *ngIf="transaction.controls.transactionTxt.value">
+                <button type="button" mat-icon-button (click)="transaction.controls.transactionTxt.reset()" matTooltip="Limpiar">
+                    <mat-icon>clear</mat-icon>
+                </button>
+            </ng-container>
+            <mat-hint align="end">{{transaction.controls.transactionTxt.value?.length || 0}} / 25</mat-hint>
+            <mat-error *ngIf="transaction.hasError('required', 'transactionTxt')">La transacción es requerida</mat-error>
+            <mat-error *ngIf="transaction.hasError('minlength', 'transactionTxt')">Debe tener mínimo 3 caracteres</mat-error>
+            <mat-error *ngIf="transaction.hasError('maxlength', 'transactionTxt')">Debe tener máximo 25 caracteres</mat-error>
+        </mat-form-field>
+
+        <!-- Description -->
+        <mat-form-field>
+            <mat-label>Descripción de la transacción</mat-label>
+            <textarea matInput rows="4" minlength="5" maxlength="255" placeholder="..." formControlName="description" required></textarea>
+            <mat-icon matPrefix>notes</mat-icon>
+            <ng-container matSuffix *ngIf="transaction.controls.description.value">
+                <button type="button" mat-icon-button (click)="transaction.controls.description.reset()" matTooltip="Limpiar">
+                    <mat-icon>clear</mat-icon>
+                </button>
+            </ng-container>
+            <mat-hint align="end">{{transaction.controls.description.value?.length || 0}} / 255</mat-hint>
+            <mat-error *ngIf="transaction.hasError('required', 'description')">La descripción es requerida</mat-error>
+            <mat-error *ngIf="transaction.hasError('minlength', 'description')">Debe tener mínimo 5 caracteres</mat-error>
+            <mat-error *ngIf="transaction.hasError('maxlength', 'description')">Debe tener máximo 255 caracteres</mat-error>
+        </mat-form-field>
+
+        <div class="center-btn">
+            <div><button type="submit" mat-flat-button color="primary">Guardar</button></div>
+            <div><button type="button" mat-flat-button (click)="onCloseDialog('cancel')" cdkFocusInitial>Cancelar</button></div>
+        </div>
+    </form>
+</mat-dialog-content>

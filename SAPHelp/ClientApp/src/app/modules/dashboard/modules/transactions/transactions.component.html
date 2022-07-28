@@ -1,0 +1,73 @@
+<main>
+    <div class="section no-m">
+        <mat-form-field appearance="outline">
+            <mat-label>Buscar transacciones</mat-label>
+            <input matInput type="text" autocomplete="off" autocorrect="off" autocapitalize="off" minlength="2" placeholder="Frases o palabras clave" [formControl]="search">
+            <ng-container matSuffix *ngIf="!search.value">
+                <mat-icon>search</mat-icon>
+            </ng-container>
+            <ng-container matSuffix *ngIf="search.value">
+                <button type="button" mat-icon-button (click)="search.reset()" matTooltip="Limpiar"><mat-icon>clear</mat-icon></button>
+            </ng-container>
+        </mat-form-field>
+    </div>
+
+    <div class="section" *ngIf="!noResults">
+        <!-- Action bar -->
+        <div class="space-between">
+            <h1 class="title-sh">
+                <ng-container *ngIf="search.valid">Resultados</ng-container>
+                <ng-container *ngIf="search.invalid">Transacciones recientes</ng-container>
+            </h1>
+            <div class="right">
+                <div *ngIf="!edit">
+                    <button mat-mini-fab color="accent" matTooltip="Agregar transacción" (click)="onNewTransaction()">
+                        <mat-icon>add</mat-icon>
+                    </button>
+                </div>
+                <div>
+                    <button mat-mini-fab color="accent" [matTooltip]="edit ? 'Terminar' : 'Editar'" (click)="edit = !edit">
+                        <mat-icon>{{edit ? 'done' : 'edit'}}</mat-icon>
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Transactions -->
+        <mat-list>
+            <div *ngFor="let g of transactions; last as lastGroup" [@slideFromRight]>
+                <h3 mat-subheader><strong>{{g.category}}</strong></h3>
+                <mat-list-item class="custom-item" *ngFor="let t of g.transactions; last as last">
+                    <mat-icon class="icon" mat-list-icon>
+                        {{t.transactionTxt?.slice(0,1)?.toLowerCase() === 'z' ? 'build' : 'bookmark'}}
+                    </mat-icon>
+                    <h4 class="line" mat-line>
+                        <a (click)="copyContent(t.transactionTxt)" matTooltip="Copiar">{{t.transactionTxt}}</a>
+                    </h4>
+                    <p class="line" mat-line>{{t.description}}</p>
+                    <ng-container *ngIf="edit">
+                        <button mat-icon-button color="warn" matTooltip="Eliminar" (click)="onDeleteTransaction(t)">
+                            <mat-icon>delete_forever</mat-icon>
+                        </button>
+                        <button mat-icon-button color="accent" matTooltip="Editar" (click)="onEditTransaction(t)">
+                            <mat-icon>edit</mat-icon>
+                        </button>
+                    </ng-container>
+                    <mat-divider [inset]="true" *ngIf="!last"></mat-divider>
+                </mat-list-item>
+                <mat-divider *ngIf="!lastGroup"></mat-divider>
+            </div>
+        </mat-list>
+    </div>
+
+    <!-- No Results -->
+    <div class="section" *ngIf="noResults">
+        <div class="center-content">
+            <mat-icon class="lg-icon">search_off</mat-icon>
+            <h1>No se encontraron transacciones</h1>
+            <button mat-raised-button color="primary" (click)="onNewTransaction()">
+                <mat-icon>add</mat-icon>&nbsp;Agregar transacción
+            </button>
+        </div>
+    </div>
+</main>

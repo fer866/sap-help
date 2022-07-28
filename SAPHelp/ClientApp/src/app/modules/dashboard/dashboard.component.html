@@ -1,0 +1,99 @@
+<cjf-photo *ngIf="(showImage | async)"></cjf-photo>
+
+<mat-toolbar color="primary" class="mat-elevation-z6">
+    <button type="button" mat-icon-button aria-label="menu" title="Menú" (click)="toggleSidenav()"><mat-icon>menu</mat-icon></button>
+    <a mat-button aria-label="Kardex" routerLink="/dashboard">
+        <img class="logo-img" alt="CJF Logo" src="assets/logo_alt_white.png">
+    </a>
+
+    <span class="spacer"></span>
+
+    <!-- Dark Theme Toggle -->
+    <button mat-icon-button aria-label="Tema oscuro" [matMenuTriggerFor]="themeMenu" matTooltip="Cambiar tema">
+        <mat-icon>invert_colors</mat-icon>
+    </button>
+    <mat-menu #themeMenu="matMenu">
+        <mat-radio-group class="radio-btn" (change)="themeChange($event)">
+            <mat-radio-button *ngFor="let opt of themeOptions" [value]="opt.option" [checked]="(themeOption | async) === opt.option">{{opt.name}}</mat-radio-button>
+        </mat-radio-group>
+    </mat-menu>
+
+    <!-- Account Settings -->
+    <button mat-icon-button aria-label="cuenta" [matTooltip]="getAccountName(account?.name) || 'Cuenta'" (click)="isPanelOpen = !isPanelOpen" cdkOverlayOrigin #trigger="cdkOverlayOrigin">
+        <mat-icon>account_circle</mat-icon>
+    </button>
+    <ng-template
+        cdkConnectedOverlay
+        [cdkConnectedOverlayOrigin]="trigger"
+        [cdkConnectedOverlayOpen]="isPanelOpen"
+        [cdkConnectedOverlayGrowAfterOpen]="true"
+        [cdkConnectedOverlayHasBackdrop]="true"
+        cdkConnectedOverlayBackdropClass="overlay-backdrop"
+        [cdkConnectedOverlayLockPosition]="true"
+        (backdropClick)="isPanelOpen = false">
+        <div class="account-panel mat-elevation-z4">
+            <div class="account-panel-inner">
+                <div>
+                    <div class="no-image-cont">
+                        <span class="no-image">{{account?.name?.slice(0, 1)}}</span>
+                    </div>
+                </div>
+                <div class="mobile">
+                    <span><strong>{{getAccountName(account?.name)}}</strong></span>
+                    <span class="small">{{account?.username}}</span>
+                    <button type="button" mat-stroked-button color="primary" (click)="logout()">
+                        <mat-icon>logout</mat-icon> Salir
+                    </button>
+                </div>
+            </div>
+        </div>
+    </ng-template>
+</mat-toolbar>
+
+<!-- Sidenav -->
+<mat-sidenav-container>
+    <mat-sidenav [mode]="(tablet | async) ? 'over' : 'side'" [autoFocus]="false" fixedInViewport [fixedTopGap]="mobile ? 56 : 64" [opened]="!(tablet | async)">
+        <div class="sidenav-header">
+            <h3>SAP Help</h3>
+        </div>
+        <div class="sidenav-content">
+            <ul>
+                <li routerLinkActive="active">
+                    <a mat-button routerLink="/dashboard/guides" (click)="changeRouteMenu()">
+                        <mat-icon>task</mat-icon>&nbsp;Guías
+                    </a>
+                </li>
+                <li routerLinkActive="active">
+                    <a mat-button routerLink="/dashboard/transactions" (click)="changeRouteMenu()">
+                        <mat-icon>flag</mat-icon>&nbsp;Transacciones
+                    </a>
+                </li>
+                <li routerLinkActive="active">
+                    <a mat-button routerLink="/dashboard/tables" (click)="changeRouteMenu()">
+                        <mat-icon>dns</mat-icon>&nbsp;Tablas de BD
+                    </a>
+                </li>
+                <li routerLinkActive="active">
+                    <a mat-button routerLink="/dashboard/catalogs" (click)="changeRouteMenu()">
+                        <mat-icon>list</mat-icon>&nbsp;Catálogos
+                    </a>
+                </li>
+                <hr>
+                <li routerLinkActive="active" *ngIf="account?.userRole === 1">
+                    <a mat-button routerLink="/dashboard/admin" (click)="changeRouteMenu()">
+                        <mat-icon>admin_panel_settings</mat-icon>&nbsp;Usuarios
+                    </a>
+                </li>
+            </ul>
+        </div>
+    </mat-sidenav>
+
+    <mat-sidenav-content>
+        <div class="app-sidenav-content" [@routeTransition]="getAnimationData(o)">
+            <div class="app-content">
+                <router-outlet #o="outlet"></router-outlet>
+            </div>
+            <cjf-footer></cjf-footer>
+        </div>
+    </mat-sidenav-content>
+</mat-sidenav-container>

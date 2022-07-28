@@ -1,0 +1,30 @@
+mat-form-field {
+    width: 100%;
+}
+.space-between {
+    margin-bottom: 12px;
+}
+// .ws-initial {
+//     white-space: initial !important;
+// }
+// .item-icon {
+//     color: rgba(var(--foreground-rgb), 0.5);
+// }
+.subheader {
+    font-size: 16px;
+}
+.custom-item {
+    height: unset !important;
+    margin: 10px 0;
+    .icon {
+        color: rgba(var(--foreground-rgb), 0.5);
+    }
+    .line {
+        white-space: unset !important;
+        overflow: unset !important;
+        text-overflow: unset !important;
+        &:last-child {
+            padding: 0 0 16px 0;
+        }
+    }
+}

@@ -1,0 +1,461 @@
+
+// Custom Theming for Angular Material
+// For more information: https://material.angular.io/guide/theming
+@import '@angular/material/theming';
+// Plus imports for other components in your app.
+
+@include mat-core();
+
+//Typography
+$custom-typography: mat-typography-config(
+  $font-family: 'Inter, Helvetica Neue, sans-serif'
+);
+@include angular-material-typography($custom-typography);
+
+//CJF Palette
+$cjf-color: (
+  50: #5b38d7,
+  100: #4f2ad1,
+  200: #4927c1,
+  300: #4323b1,
+  400: #3d20a0,
+  500: #371d90,
+  600: #301a80,
+  700: #2a166f,
+  800: #24135f,
+  900: #1e104f,
+  A100: #d4cbf5,
+  A200: #9179e4,
+  A400: #8469e1,
+  A700: #6948da,
+  contrast: (
+    50: white,
+    100: white,
+    200: white,
+    300: white,
+    400: white,
+    500: white,
+    600: white,
+    700: white,
+    800: white,
+    900: white,
+    A100: #333333,
+    A200: white,
+    A400: white,
+    A700: white
+  )
+);
+
+//Light Theme
+$light-primary: mat-palette($cjf-color, 800, 400, 900);
+$light-accent: mat-palette($mat-blue-grey, 400);
+$light-warn: mat-palette($mat-red);
+
+$light-theme: mat-light-theme($light-primary, $light-accent, $light-warn);
+@include angular-material-theme($light-theme);
+
+//Dark Theme
+.dark-theme {
+  $dark-primary: mat-palette($cjf-color, A700);
+  $dark-accent: mat-palette($mat-blue-grey, 400);
+  $dark-warn: mat-palette($mat-red);
+
+  $dark-theme: mat-dark-theme($dark-primary, $dark-accent, $dark-warn);
+  @include angular-material-theme($dark-theme);
+
+  --primary: #{mat-color($dark-primary)};
+  --accent: #{mat-color($dark-accent)};
+  --warn: #{mat-color($dark-warn)};
+  --foreground: #{map-get(map-get($dark-theme, foreground), text)};
+  --foreground-rgb: 255, 255, 255;
+  --background: #{map-get(map-get($dark-theme, background), background)};
+  --contrast: #{mat-color($dark-primary, default-contrast)};
+  --footer: #{mat-color(mat-palette($mat-grey, 800))};
+}
+
+:root {
+  --primary: #{mat-color($light-primary)};
+  --accent: #{mat-color($light-accent)};
+  --warn: #{mat-color($light-warn)};
+  --foreground: #{map-get(map-get($light-theme, foreground), text)};
+  --foreground-rgb: 0, 0, 0;
+  --background: #{map-get(map-get($light-theme, background), background)};
+  --contrast: #{mat-color($light-primary, default-contrast)};
+  --footer: #{mat-color(mat-palette($mat-grey, 200))};
+}
+
+/* You can add global styles to this file, and also import other style files */
+
+html { scroll-behavior: smooth; }
+body {
+  height: 100%;
+  margin: 0;
+  padding: 0;
+  font-family: Inter, "Helvetica Neue", sans-serif;
+}
+
+main {
+  display: flex;
+  align-items: center;
+  flex-direction: column;
+  padding: 16px;
+  width: 100%;
+}
+.section {
+  width: 85%;
+  margin: 0 0 40px;
+  @media only screen and (max-width: 600px) {
+    width: 98%;
+    margin: 0 0 25px;
+  }
+  &.no-m { margin: 0; }
+}
+.center {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+}
+.center-btn {
+  display: flex;
+  flex-flow: row wrap;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  button {
+    margin-right: 8px;
+    margin-top: 6px;
+  }
+  & > * {
+    margin-right: 8px;
+    margin-top: 6px;
+    &:last-child {
+      margin-right: 0;
+    }
+  }
+}
+a {
+  color: inherit;
+  text-decoration: none;
+  cursor: pointer;
+}
+img {
+  vertical-align: middle;
+  border-style: none;
+}
+* {
+  padding: 0;
+  box-sizing: border-box;
+}
+hr {
+  margin: 4px 0;
+  padding: 0;
+  border: 0;
+  border-top: 1px solid rgba(var(--foreground-rgb), 0.3);
+}
+header {
+  padding: 48px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  background-color: var(--footer);
+  color: var(--foreground);
+  @media only screen and (max-width: 600px) {
+    padding: 32px;
+  }
+}
+@mixin flex-sides($side) {
+  display: flex;
+  flex-direction: row;
+  justify-content: flex-#{$side};
+  margin: 0;
+  padding: 0;
+  & > * {
+    margin-right: 8px;
+    margin-top: 8px;
+  }
+}
+.left {
+  @include flex-sides('start');
+}
+.right {
+  @include flex-sides('end');
+}
+@mixin space-prop($type) {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-#{$type};
+  align-items: center;
+  flex-wrap: wrap;
+  & > * {
+    margin-right: 8px;
+    margin-top: 8px;
+    &:first-child {
+      margin-top: 0;
+    }
+  }
+}
+.space-between {
+  @include space-prop('between');
+  margin-bottom: 12px;
+}
+.space-evenly {
+  @include space-prop('evenly');
+}
+.back-arrow {
+  $size: 34px !important;
+  width: $size;
+  height: $size;
+  font-size: $size;
+  line-height: $size;
+}
+
+/* Table Styles */
+.table-container-md {
+  @media only screen and (max-width: 992px) {
+    max-height: 300px;
+    overflow-y: auto;
+    margin-bottom: 8px;
+  }
+  @media only screen and (min-width: 993px) {
+    max-height: calc(65vh - 56px);
+    overflow-y: auto;
+  }
+}
+.table-container-md .table-mobile thead th {
+  @media only screen and (min-width: 601px) {
+      position: sticky;
+      top: -0.5px;
+      background-color: var(--background);
+      z-index: 1;
+  }
+}
+.table-mobile {
+  border: 1px solid rgba(var(--foreground-rgb), 0.6);
+  border-collapse: collapse;
+  border-spacing: 0;
+  margin: 0;
+  padding: 0;
+  width: 100%;
+  // table-layout: fixed;
+  @media only screen and (max-width: 600px) {
+      border: 0;
+  }
+  thead tr {
+    border: 1px solid rgba(var(--foreground-rgb), 0.05);
+    padding: .35em 0 .75em;
+    @media only screen and (max-width: 600px) {
+        border-bottom: 3px solid rgba(var(--foreground-rgb), 0.05);
+        display: block;
+        margin-bottom: .625em;
+    }
+  }
+  tbody tr {
+    border: 1px solid rgba(var(--foreground-rgb), 0.05);
+    padding: .35em 0 .75em;
+    &:nth-child(odd) {
+        background-color: rgba(var(--foreground-rgb), 0.03);
+    }
+    @media only screen and (max-width: 600px) {
+        border-bottom: 3px solid rgba(var(--foreground-rgb), 0.05);
+        display: block;
+        margin-bottom: .625em;
+    }
+  }
+  thead {
+    @media only screen and (max-width: 600px) {
+        border: none;
+        clip: rect(0 0 0 0);
+        height: 1px;
+        margin: -1px;
+        overflow: hidden;
+        padding: 0;
+        position: absolute;
+        width: 1px;
+    }
+    .mat-sort-header-container {
+      justify-content: center;
+    }
+  }
+  th, td {
+    padding: .62em .31em;
+    text-align: center;
+    vertical-align: middle;
+  }
+  td {
+    @media only screen and (max-width: 600px) {
+        border-bottom: 1px solid rgba(var(--foreground-rgb), 0.05);
+        display: block;
+        font-size: .8em;
+        text-align: right;
+    }
+    &::before {
+        @media only screen and (max-width: 600px) {
+            content: attr(data-label);
+            float: left;
+            font-weight: bold;
+            text-transform: uppercase;
+        }
+    }
+    &:last-child {
+        border-bottom: 0;
+    }
+  }
+  th {
+    font-size: .85em;
+  }
+}
+
+.form-error {
+  display: block;
+  color: var(--warn);
+  font-size: 12px;
+}
+.btn-section {
+  display: flex;
+  flex-flow: row wrap;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  & > * {
+    margin-top: 10px;
+    margin-right: 10px;
+  }
+}
+.snack-dark {
+  background: #fafafa;
+  color: #333333;
+}
+@mixin center($all: false) {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  @if $all {
+    min-height: calc(100vh - 64px);
+    @media only screen and (max-width: 600px) {
+      min-height: calc(100vh - 56px);
+    }
+  } @else {
+    height: 100%;
+  }
+  .lg-icon {
+    $size: 220px;
+    font-size: $size;
+    width: $size;
+    height: $size;
+    line-height: $size;
+    display: block;
+    color: rgba(var(--foreground-rgb), 0.2);
+  }
+  h1 {
+    color: rgba(var(--foreground-rgb), 0.2);
+    @if $all {
+      font-size: 4em;
+    } @else {
+      font-size: 2.8em;
+    }
+    margin: 0 0 12px;
+  }
+}
+.center-fill {
+  @include center($all: true);
+}
+.center-content {
+  @include center($all: false);
+}
+.list-subheader {
+  font-weight: 600;
+  font-size: 1.2em;
+  margin: 0 0 18px;
+  color: rgba(var(--foreground-rgb), 0.5);
+}
+.title-sh {
+  font-size: 1.8em;
+    &::first-letter {
+        border-bottom: 2px solid var(--primary);
+        font-size: 115%;
+    }
+}
+.scrollblock {
+  overflow: hidden !important;
+}
+.overlay-backdrop {
+  opacity: 0;
+}
+.account-panel {
+  background: var(--background);
+  border-radius: 4px;
+  padding: 14px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  $size: 96px;
+  @media only screen and (max-width: 600px) {
+    padding: 12px 8px;
+    max-width: 212px;
+  }
+  .account-panel-inner {
+    display: grid;
+    gap: 12px;
+    grid-template-columns: auto 1fr;
+    align-items: center;
+    justify-content: center;
+    @media only screen and (max-width: 600px) {
+      grid-template-columns: minmax(152px, 1fr);
+      text-align: center;
+    }
+  }
+  .account-lg-picture {
+    width: $size;
+    height: $size;
+    border-radius: 50%;
+    margin: auto;
+    display: block;
+    object-fit: cover;
+  }
+  .no-image-cont {
+    width: $size;
+    height: $size;
+    border-radius: 50%;
+    overflow: hidden;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    margin: auto;
+    .no-image {
+      font-size: ($size * .7);
+      width: $size;
+      height: $size;
+      line-height: $size;
+      text-align: center;
+      color: #f2f2f2;
+      background-color: var(--accent);
+    }
+  }
+  .mobile {
+    & > span {
+      display: block;
+      margin-bottom: 4px;
+      &.small {
+          font-size: .8em;
+          color: rgba(var(--foreground-rgb), 0.5);
+      }
+    }
+    @media only screen and (max-width: 600px) {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+  }
+}
+$count: 90;
+@while $count <= 100 {
+  .w-#{$count} {
+    width: $count * 1%;
+  }
+  $count: $count + 1;
+}

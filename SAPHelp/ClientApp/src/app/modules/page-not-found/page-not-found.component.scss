@@ -1,0 +1,23 @@
+.lg-icon {
+    $size: 220px;
+    font-size: $size;
+    width: $size;
+    height: $size;
+    line-height: $size;
+    display: block;
+    color: var(--warn);
+}
+h1 {
+    color: var(--warn);
+    font-size: 4em;
+    margin: 0;
+}
+h3 {
+    color: rgba(var(--foreground-rgb), 0.5);
+    font-size: 1.2em;
+    margin: 6px 0 18px;
+}
+.center {
+    min-height: 100vh;
+    background: var(--background);
+}
